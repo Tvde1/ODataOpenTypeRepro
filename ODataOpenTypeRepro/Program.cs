@@ -16,11 +16,12 @@ var oDataContext = new ODataQueryContext(edmModel, typeof(MyModel), new ODataPat
 
 string[] workingQueryParts = [
     "knownString eq 'test'",
-    "knownComplexTypeArray/any(x: x/fileName eq 'test.txt')",
+    "knownComplexTypeArray/any(x: x/fileName in ('test.txt', 'test2.txt'))",
     "unknownString eq 'test'",
     "unknownInt eq 123",
     "unknownDateTime eq 2024-01-01T00:00:00Z",
-    // "knownInt IN (1, 2, 3)", // works on prod, but for some reason not in this repro
+    "knownString in ('a', 'b', 'c')",
+    "knownInt in (1, 2, 3)",
 ];
 
 string[] notWorkingQueryParts = [
@@ -72,8 +73,8 @@ public class MyModel : Dictionary<string, object>
     [JsonPropertyName("id")]
     public int Id { get; set; }
 
-    [DataMember(Name = "knowString")]
-    [JsonPropertyName("knowString")]
+    [DataMember(Name = "knownString")]
+    [JsonPropertyName("knownString")]
     public string KnownString { get; set; } = null!;
 
     [Required]
