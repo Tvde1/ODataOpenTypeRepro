@@ -3,7 +3,6 @@ using System.Diagnostics;
 using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.OData.Query;
-using Microsoft.OData;
 using Microsoft.OData.ModelBuilder;
 using Microsoft.OData.UriParser;
 
@@ -22,13 +21,14 @@ string[] workingQueryParts = [
     "unknownDateTime eq 2024-01-01T00:00:00Z",
     "knownString in ('a', 'b', 'c')",
     "knownInt in (1, 2, 3)",
+    "unknownComplexTypeArray/any(x: x/fileName eq 'test.txt')",
+    "unknownString in ('a', 'b', 'c')",
+    "en/jobTitle eq 'Product owner'"
+];
+string[] notWorkingQueryParts = [
+    "unknownInt in (1, 2, 3)",
 ];
 
-string[] notWorkingQueryParts = [
-    "unknownComplexTypeArray/any(x: x/fileName eq 'test.txt')",
-    "unknownString IN ('a, 'b', 'c')",
-    "unknownInt in (1, 2, 3)"
-];
 
 // The working query parts succesfully compile
 CreateQuery<MyModel>(oDataContext, string.Join(" and ", workingQueryParts));
@@ -42,14 +42,11 @@ foreach (var notWorkingQueryPart in notWorkingQueryParts)
         CreateQuery<MyModel>(oDataContext, notWorkingQueryPart);
         Debug.Fail("This should not happen");
     }
-    catch (ArgumentNullException e)
+    catch (Exception)
     {
-    }
-    catch (ODataException e)
-    {
+        // happy flow
     }
 }
-
 
 return;
 
