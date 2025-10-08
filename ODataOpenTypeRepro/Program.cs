@@ -14,15 +14,15 @@ var oDataContext = new ODataQueryContext(edmModel, typeof(MyModel), new ODataPat
 
 
 string[] workingQueryParts = [
-    "knownString eq 'test'",
-    "knownComplexTypeArray/any(x: x/fileName in ('test.txt', 'test2.txt'))",
-    "unknownString eq 'test'",
-    "unknownInt eq 123",
-    "unknownDateTime eq 2024-01-01T00:00:00Z",
-    "knownString in ('a', 'b', 'c')",
-    "knownInt in (1, 2, 3)",
-    "unknownComplexTypeArray/any(x: x/fileName eq 'test.txt')",
-    "unknownString in ('a', 'b', 'c')",
+    // "knownString eq 'test'",
+    // "knownComplexTypeArray/any(x: x/fileName in ('test.txt', 'test2.txt'))",
+    // "unknownString eq 'test'",
+    // "unknownInt eq 123",
+    // "unknownDateTime eq 2024-01-01T00:00:00Z",
+    // "knownString in ('a', 'b', 'c')",
+    // "knownInt in (1, 2, 3)",
+    // "unknownComplexTypeArray/any(x: x/fileName eq 'test.txt')",
+    // "unknownString in ('a', 'b', 'c')",
     "en/jobTitle eq 'Product owner'"
 ];
 string[] notWorkingQueryParts = [
@@ -59,7 +59,11 @@ void CreateQuery<TModel>(ODataQueryContext oDataContext, string rule)
     var filter = new FilterQueryOption(rule, oDataContext, queryOptionParser);
 
     var baseQueryable = new List<TModel>().AsQueryable();
-    filter.ApplyTo(baseQueryable, new ODataQuerySettings());
+    var newQueryable = filter.ApplyTo(baseQueryable, new ODataQuerySettings());
+
+    var ex = newQueryable.Expression.ToString();
+
+    // Debugger.Break();
 }
 
 [DataContract]
